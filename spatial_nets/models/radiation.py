@@ -93,7 +93,7 @@ class RadiationModel(Model):
             Maximum radius to count locations as intervening opportunities
             (the default is np.inf).
         finite_correction :
-            Wether to normalise each row using the term $1/(1 - m_i / M)$.
+            Whether to normalise each row using the term $1/(1 - m_i / M)$.
 
         Returns
         -------

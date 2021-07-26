@@ -3,9 +3,11 @@ from typing import Dict, Optional
 
 import numpy as np
 import scipy.sparse as sp
+from scipy.sparse.dia import dia_matrix
 from sklearn.metrics import pairwise
 
 import graph_tool as gt
+from spatial_graphs import SpatialGraph, SpatialDiGraph
 
 import spatial_nets.utils as utils
 
@@ -110,6 +112,15 @@ class LocationsDataClass:
             #  elif coords is not None:
             #      self.dmat = coords
             #  TODO: This should be covered by the elif below
+
+        elif isinstance(data, (SpatialGraph, SpatialDiGraph)):
+            if data.fmat is not None:
+                self.flow_data = data.fmat
+            else:
+                raise ValueError("SpatialGraph needs an `fmat' attribute")
+
+            if data.dists is not None:
+                self.dmat = data.dists
 
         # In any other case, the coordinates should be passed (the coords
         #  argument takes precedence)
@@ -263,7 +274,8 @@ class LocationsDataClass:
 
         # NB: We remove the diagonal from the data matrix BEFORE calculating
         # the row and column sums
-        self._flow_data = utils.sparsemat_remove_diag(flow_mat)  # creates a copy
+        self._flow_data = utils.sparsemat_remove_diag(
+            flow_mat)  # creates a copy
 
         # Row and column sums
         self.production = np.asarray(self._flow_data.sum(axis=1)).flatten()

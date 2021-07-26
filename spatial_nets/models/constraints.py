@@ -56,7 +56,8 @@ class ConstrainedModel(Model, ABC):
         PValues
 
         """
-        method_name = "_pvalues_" + ("approx" if self.approx_pvalues else "exact")
+        method_name = "_pvalues_" + \
+            ("approx" if self.approx_pvalues else "exact")
         method = getattr(self, method_name)
         return method()
 
@@ -99,7 +100,8 @@ class ConstrainedModel(Model, ABC):
             data_minus[np.diag_indices(self.N)] = 1.0
             data_minus[(data_minus == 0).nonzero()] = 1e-16
             log_not_pmat = np.log(data_minus)
-            target_vec = np.ones(self.N)  # NB: the target_vec is not used for Z-scores
+            # NB: the target_vec is not used for Z-scores
+            target_vec = np.ones(self.N)
             pvals._set_left_data(log_not_pmat, target_vec)
 
         return pvals
