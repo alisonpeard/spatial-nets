@@ -23,7 +23,8 @@ class Experiment(object):
 
         assert model.startswith(("gravity", "radiation"))
         assert model.endswith(("production", "attraction", "doubly"))
-        assert benchmark in (("expert", "cerina")), f"invalid benchmark: {benchmark}"
+        assert benchmark in (("expert", "cerina")
+                             ), f"invalid benchmark: {benchmark}"
         assert sign in (("plus", "minus", "weight_covariates"))
         if sign == "weight_covariates":
             raise NotImplementedError
@@ -50,14 +51,14 @@ class Experiment(object):
         coords, comm_vec, coo_mat = self.benchmark(
             self.N, self.rho, **self.params, seed=seed, directed=self.directed
         )
-
         bench = utils.build_weighted_graph(
             coo_mat,
             directed=self.directed,
             coords=coords,
             vertex_properties={"b": comm_vec},
         )
-
+        import pdb
+        pdb.set_trace()
         # block_state = gt.BlockState(bench, b=bench.vp.b)
 
         if return_backbone:

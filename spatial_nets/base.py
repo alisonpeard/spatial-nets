@@ -95,7 +95,7 @@ class Model(ABC):
     #     return CPC(Data, self.constrained_model(model, constraint_type, params))
     #
 
-
+ 
 class PValues:
     def __init__(
         self,

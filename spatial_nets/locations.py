@@ -6,6 +6,8 @@ import scipy.sparse as sp
 from sklearn.metrics import pairwise
 
 import graph_tool as gt
+import networkx as nx
+from spatial_graphs import SpatialGraph, SpatialDiGraph
 
 import spatial_nets.utils as utils
 
@@ -111,6 +113,15 @@ class LocationsDataClass:
             #      self.dmat = coords
             #  TODO: This should be covered by the elif below
 
+        elif isinstance(data, (SpatialGraph, SpatialDiGraph)):
+            if data.fmat is not None:
+                self.flow_data = data.fmat
+            else:
+                raise ValueError("SpatialGraph has no flow matrix/")
+
+            if data.dists is not None:
+                self.dmat = data.dists
+
         # In any other case, the coordinates should be passed (the coords
         #  argument takes precedence)
 
@@ -210,6 +221,8 @@ class LocationsDataClass:
         N = len(prod)
 
         if not np.all(prod > 0):
+            import pdb
+            pdb.set_trace()
             raise ValueError("input should have strictly positive entries")
 
         if self.N is not None:
@@ -230,6 +243,7 @@ class LocationsDataClass:
         attrac = np.array(attrac)
 
         if not np.all(attrac > 0):
+            pdb.set_trace()
             raise ValueError("input should have strictly positive entries")
         if len(attrac) != self.N:
             raise ValueError("input has invalid length")
@@ -263,7 +277,8 @@ class LocationsDataClass:
 
         # NB: We remove the diagonal from the data matrix BEFORE calculating
         # the row and column sums
-        self._flow_data = utils.sparsemat_remove_diag(flow_mat)  # creates a copy
+        self._flow_data = utils.sparsemat_remove_diag(
+            flow_mat)  # creates a copy
 
         # Row and column sums
         self.production = np.asarray(self._flow_data.sum(axis=1)).flatten()

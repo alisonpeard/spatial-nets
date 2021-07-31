@@ -89,7 +89,8 @@ class GravityModel(Model):
             elif constraint == "attraction":
                 aux_constraint = AttractionConstrained()
             else:  # doubly
-                aux_constraint = DoublyConstrained(maxiters=maxiters, verbose=verbose)
+                aux_constraint = DoublyConstrained(
+                    maxiters=maxiters, verbose=verbose)
 
             self.aux_constraint = aux_constraint
 
@@ -129,7 +130,6 @@ class GravityModel(Model):
             # note this doesn't fix problems outside diagonal, this is on purpose
 
             out = (m ** α) * (n.T ** β) * dmat_power
-
         return out
 
     def fit(self, data: LocationsDataClass):
@@ -183,7 +183,8 @@ class GravityModel(Model):
             kwargs = kwargs_from_vec(x, template)
             fmat = self._gravity_matrix(**kwargs)
             predict = self.aux_constraint.transform(fmat)
-            diff = np.log(y) - np.log(predict[idx]) if use_log else y - predict[idx]
+            diff = np.log(
+                y) - np.log(predict[idx]) if use_log else y - predict[idx]
             return diff
 
         if constraint is None:
@@ -268,7 +269,8 @@ class GravityModel(Model):
             bounds = [(0, None)]
             template_args = {"γ": first, "α": zero, "β": zero}
 
-        res = optimize.minimize(cost_fun, x0, bounds=bounds, args=(template_args))
+        res = optimize.minimize(
+            cost_fun, x0, bounds=bounds, args=(template_args))
         assert res.success, "optimization routine failed"
 
         if verbose:
